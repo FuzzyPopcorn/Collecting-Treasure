@@ -6,6 +6,8 @@ var path,boy,cash,diamonds,jwellery,sword;
 var pathImg,boyImg,cashImg,diamondsImg,jwelleryImg,swordImg;
 var treasureCollection = 0;
 var cashG,diamondsG,jwelleryG,swordGroup;
+var obstacle1;
+var obstacle2;
 
 function preload(){
   pathImg = loadImage("Road.png");
@@ -18,6 +20,8 @@ function preload(){
   diamondsImg = loadImage("diamonds.png");
   jwelleryImg = loadImage("jwell.png");
   swordImg = loadImage("sword.png");
+  obstacle1 = loadImage("obstacle1.png");
+  obstacle2 = loadImage("obstacle2.png"); 
   endImg =loadAnimation("gameOver.png");
 }
 
@@ -44,7 +48,7 @@ cashG=new Group();
 diamondsG=new Group();
 jwelleryG=new Group();
 swordGroup=new Group();
-
+obstacleGroup=new Group();
 }
 
 
@@ -67,6 +71,7 @@ function draw() {
    
     createSword();
     spawnTreasure();
+    spawnObstacles();
    
    if (cashG.isTouching(boy)) {
       cashG.destroyEach();
@@ -80,15 +85,15 @@ function draw() {
       jwelleryG.destroyEach();
       treasureCollection = treasureCollection+15;
       }
-   else if(swordGroup.isTouching(boy)) {
+   else if(swordGroup.isTouching(boy)||obstacleGroup.isTouching(boy)) {
         gameState = END;
      jwelleryG.destroyEach();
      diamondsG.destroyEach();
      cashG.destroyEach();
      swordGroup.destroyEach();
+     obstacleGroup.destroyEach();
     }
  }
-  
   
   
 
@@ -148,6 +153,24 @@ function createSword(){
   }
 }
 
+function spawnObstacles(){
+  if (World.frameCount % 150 == 0) {
+    var obstacle = createSprite(Math.round(random(50, 350),40, 10, 10));
+    var selectobstacle = Math.round(random(1,2))
+    if(selectobstacle == 1){
+      obstacle.addImage(obstacle1);
+      obstacle.scale = 0.1
+    }
+    else{
+      obstacle.addImage(obstacle2);
+      obstacle.scale = 0.1
+    }
+    obstacle.velocityY = 3;
+    obstacle.lifetime = 150;
+    obstacleGroup.add(obstacle);
+  }
+}
+
 function spawnTreasure(){
   var selecttreasure = Math.round(random(1,3))
   console.log(selecttreasure)
@@ -159,7 +182,7 @@ function spawnTreasure(){
     else if(selecttreasure == 2){
     createDiamonds();
     }
-    else {
+    else{ 
     createJwellery();
     }
   }
